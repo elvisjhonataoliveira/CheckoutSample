@@ -10,6 +10,7 @@ Para o correto funcionamento da aplicação é necessário que as seguintes solu
 - Npm
 - MongoDB
 - Mocha
+- nyc
 
 ## Instalação
 
