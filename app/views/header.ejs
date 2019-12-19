@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<%- include('includeCssJs')%>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body style="padding-top: 70px">
+		<div class="loader" id="loader" style="display: none;">
+			<div class="loaderContent">
+				<i class="fa fa-spinner fa-spin fa-5x"></i>
+			</div>
+		</div>
+		<div class='row  fixed-top'>
+			<div class="col-md-12">
+				<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+					<a class="navbar-brand" href="/checkout-new">MP Store</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<% if (user.username) { -%>
+					<div class="collapse navbar-collapse" id="navbarColor01">
+						<ul class="navbar-nav mr-auto">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Pagamentos</a>
+								<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
+									<a class="dropdown-item" href="/checkout-new">Novo Pagamento</a>
+									<a class="dropdown-item" href="/checkout/saved">Pagamento Cartão Salvo</a>
+									<a class="dropdown-item" href="/checkout">Listar Pagamentos</a>
+								</div>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Usuários</a>
+								<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
+									<a class="dropdown-item" href="/user-new">Criar Usuário</a>
+									<a class="dropdown-item" href="/user">Listar Usuários</a>								
+								</div>
+							</li>
+							
+						</ul>
+						<form class="form-inline my-2 my-lg-0">
+						 	<a href='/logout' class="btn btn-primary my-2 my-sm-0">Logout</a>
+						</form>
+					</div>
+					<% } -%>
+				</nav>
+			</div>
+		</div>
+		<div class='container' id='html-content'>

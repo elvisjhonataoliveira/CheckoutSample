@@ -1,0 +1,32 @@
+<%- include("header")%>
+<div class="row">
+	<div class="col-sm-6 offset-sm-3">
+		<form method="POST" action="/login" class="form-horizontal jumbotron" id="pay">
+			<fieldset>
+				<legend>Login</legend>
+				<% if(errors && errors.length>0){ %>
+					<div class="alert alert-dismissible alert-primary">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<ul>
+						<% for(var i = 0; i < errors.length; i++) { %>
+							<li class="text-primary"><%=errors[i].msg%></li>
+						<% } %>
+						</ul>
+					</div>
+				<% } %>
+				<div class="form-group">
+					<label class="control-label">Usuário</label>
+    				<input class="form-control" type="text" placeholder="Nome do usuário ou da aplicação" name="username">
+				</div>
+				<div class="form-group">
+					<label class="control-label">Senha</label>
+    				<input class="form-control" type="password" placeholder="Digite a senha para esse usuário" name="password">
+				</div>
+				<div class="form-group">
+					<input class="btn btn-primary" type="submit" value="Login">
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<%- include("footer")%>

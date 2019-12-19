@@ -1,0 +1,200 @@
+<%- include("../header")%>
+<!-- JS do Mercado Pago -->
+<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+<!-- JS da página -->
+<script src="/js/checkout.js"></script>
+<!-- CSS da página -->
+<link rel="stylesheet" type="text/css" href="/css/checkout.css">
+
+<div class="row">
+	<div class="col-md-8 offset-md-2">
+		<form class="form-horizontal jumbotron" id="pay">
+			<fieldset>
+				<legend>Finalize seu pedido!</legend>
+				<% if(errors && errors.length>0){ %>
+					<div class="alert alert-dismissible alert-primary">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<strong>Pagamento recusado, verifique as informações abaixo.</strong> 
+						<ul>
+
+						<% for(var i = 0; i < errors.length; i++) { %>
+							<li class="text-primary"><%=errors[i].msg%></li>
+						<% } %>
+						</ul>
+					</div>
+				<% } %>
+				<input type="hidden" name="description"/>
+        		<input type="hidden" name="token" id="token"/>
+        		<input type="hidden" name="paymentMethodId" />
+        		<div class="row">
+					<div class="form-group col-md-5">
+						<label class="control-label">Valor da Compra</label>
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text">R$</span>
+								</div>
+								<input type="text" name="amount" value="<%= order.amount %>" id="amount" class="form-control" inputmode="numeric" pattern="[0-9]*">
+								<div class="input-group-append">
+						        	<span class="input-group-text">,00</span>
+						     	 </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label>Forma de Pagamento</label>
+					<select class="form-control" id="paymentMethod" name="paymentMethod">
+						<option value="credit-card">Cartão de Crédito</option>
+						<% for (var i = 0; i < paymentMethods.length; i++) { -%>
+							<% if (paymentMethods[i].payment_type_id!='credit_card') { -%>
+								<option value="<%=paymentMethods[i].id%>"><%=paymentMethods[i].name%></option>	
+							<% } -%>
+						<% } -%>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>E-mail</label>
+					<input type="email" class="form-control" placeholder="Digite seu e-mail" value="<%= order.email %>" name="email">
+				</div>
+				<div class="form-group row non-credit-card-info" style="display: none;">
+					<div class="col-md-6">
+						<label>Nome</label>
+						<input type="text" class="form-control" placeholder="Nome do comprador" value="<%= order.firstName %>" name="firstName">
+					</div>	
+					<div class="col-md-6">
+						<label>Sobrenome</label>
+						<input type="text" class="form-control" placeholder="Sobrenome do comprador" value="<%= order.lastName %>" name="lastName">
+					</div>	
+				</div>
+				
+				
+				<div class="form-group row">
+					<div class="col-md-4">
+						<label>Tipo do Documento</label>
+						<select class="form-control" id="docType" name="docType" data-checkout="docType"></select>
+					</div>
+					<div class="col-md-8">
+						<label>Documento</label>
+						<input type="text" class="form-control" name="docNumber"  value="<%= order.docNumber %>" placeholder="Informe o documento do titular do cartão" id="docNumber" data-checkout="docNumber"  inputmode="numeric" pattern="[0-9]*">
+					</div>
+				</div>
+				<div class="form-group credit-card-info">
+					<label>Número do Cartão</label>
+					<input type="text" class="form-control" value="<%= order.cardNumber %>" placeholder="Informe o valor da compra primeiro" id="cardNumber" data-checkout="cardNumber" disabled="disabled"  inputmode="numeric" pattern="[0-9]*">
+				</div>
+				<div class="form-group credit-card-info">
+					<label>Nome do Cartão</label>
+					<input type="text" class="form-control" value="<%= order.cardholderName %>" placeholder="Digite o nome que está no cartão" name="cardholderName" id="cardholderName" data-checkout="cardholderName">
+				</div>
+				<div class="form-group row credit-card-info">
+					<div class="form-group col-md-6">
+						<label class="control-label">Data de Expiração</label>
+						<div class="input-group">
+							<div class="input-group-prepend col-md-5 col-5">
+								<input type="text" class="form-control" value="<%= order.cardExpirationMonth %>" id="cardExpirationMonth" data-checkout="cardExpirationMonth" placeholder="Mês" inputmode="numeric" pattern="[0-9]*">
+							</div>
+							<span class="input-group-text">/</span>
+							<div class="input-group-append  col-md-5 col-5">
+					        	<input type="text" class="form-control" value="<%= order.cardExpirationYear %>" id="cardExpirationYear" data-checkout="cardExpirationYear" placeholder="Ano" inputmode="numeric" pattern="[0-9]*">
+					     	 </div>	
+				     	</div>
+					</div>
+					<div class="col-md-2">
+						<label>CVV</label>
+						<input type="text" class="form-control" value="<%= order.securityCode %>" placeholder="XXXX" id="securityCode" data-checkout="securityCode" inputmode="numeric" pattern="[0-9]*">
+					</div>
+					<div class="col-md-4">
+						<label class="control-label">Parcelamento</label>
+						<select id="installments" class="form-control" name="installments"></select>
+					</div>
+				</div>
+				<div class="form-group row credit-card-info">
+					<div class="form-check">
+        				<label class="form-check-label">
+          					<input class="form-check-input" type="checkbox" value="true" name="saveCreditCard">
+          					Salvar Cartão
+       					</label>
+      				</div>
+				</div>	
+				<div class="form-group">
+					<input class="btn btn-primary" type="submit" value="Realizar pagamento"/>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<div id="modal-container">
+	<div id="modal-hidder">
+	</div>
+	<div class="alert alert-dismissible alert-primary" id="modal-error">
+		<button type="button" class="close" onclick="javascript: $('#modal-container').hide()">&times;</button>
+		<strong>Erro ao processar pagamento</strong>
+		<ul id="error-list">
+
+		</ul>
+	</div>
+</div>
+
+
+<%- include("../footer")%>
+<script>
+	window.Mercadopago.setPublishableKey("<%= mpPublickKey %>");
+	window.Mercadopago.getIdentificationTypes();
+	addEvent(document.querySelector('#cardNumber'), 'keyup', guessingPaymentMethod);
+	addEvent(document.querySelector('#cardNumber'), 'change', guessingPaymentMethod);
+	addEvent(document.querySelector('#amount'), 'change', guessingPaymentMethod);
+	addEvent(document.querySelector('#pay'), 'submit', doPay);
+	addEvent(document.querySelector('#docType'), 'change', function(){
+		const docType = $("#docType").val();
+		if(docType=='CPF'){
+			$("#docNumber").mask("00000000000", {reverse: true});
+			nextFocus("#docNumber", 11, "#cardNumber");
+		} else if(docType=="CNPJ"){
+			$("#docNumber").mask("00000000000000", {reverse: true});
+			nextFocus("#docNumber", 14, "#cardNumber");
+		} else {
+			$("#docNumber").unmask();
+			nextFocus("#docNumber", 20, "#cardNumber");
+		}
+	  });
+	addEvent(document.querySelector('#amount'), 'keyup', function(event){
+		const amount = $("#amount").val();
+		if(!isNaN(parseInt(amount))){
+			$('#cardNumber').prop( "disabled", false);
+			$('#cardNumber').prop( 'placeholder', 'Digite o número do cartão' );
+			return;
+		}
+		$('#cardNumber').prop( 'disabled', true );
+		$('#cardNumber').prop( 'placeholder', 'Informe o valor da compra primeiro' );
+		$('#cardNumber').val('');
+	});
+
+	addEvent(document.querySelector('#paymentMethod'), 'change', function(event){
+		$('.credit-card-info').show();
+		$('.non-credit-card-info').show();
+		if($('#paymentMethod').val()!='credit-card'){
+			$('.credit-card-info').hide();
+		} else {
+			$('.non-credit-card-info').hide();
+		}
+	});
+
+	$("#docNumber").mask("00000000000", {reverse: true});
+	$("#cardNumber").mask("0000000000000000");
+	$("#cardExpirationMonth").mask("00");
+	$("#cardExpirationYear").mask("00");
+	$("#securityCode").mask("0000");
+	$('#amount').mask("###0", {reverse: true});
+
+
+
+	nextFocus("#docNumber", 11, "#cardNumber");
+	nextFocus("#cardNumber", 16, "#cardholderName");
+	nextFocus("#cardExpirationMonth", 2, "#cardExpirationYear");
+	nextFocus("#cardExpirationYear", 2, "#securityCode");
+	nextFocus("#securityCode", 4, "#installments");
+
+	setToken('<%=user.token%>');
+
+</script>

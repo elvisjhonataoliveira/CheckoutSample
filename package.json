@@ -1,0 +1,40 @@
+{
+  "name": "br.com.elvis.checkoutsample",
+  "version": "1.0.0",
+  "description": "Exemplo de checkout utilizando MercadoPago",
+  "main": "app.js",
+  "scripts": {
+    "test": "nyc mocha",
+    "coverage": "istanbul cover mocha -- ./test/* --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elvisjhonataoliveira/CheckoutSample.git"
+  },
+  "author": "Elvis Oliveira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elvisjhonataoliveira/CheckoutSample/issues"
+  },
+  "homepage": "https://github.com/elvisjhonataoliveira/CheckoutSample#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "consign": "^0.1.6",
+    "dateformat": "^3.0.3",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "express-validator": "^5.3.1",
+    "mercadopago": "^1.2.1",
+    "mongodb": "^3.4.0",
+    "properties-reader": "^0.3.1",
+    "request": "^2.88.0",
+    "should": "^13.2.3",
+    "validar-cpf": "^2.1.2"
+  },
+  "devDependencies": {
+    "nyc": "^14.1.1"
+  }
+}

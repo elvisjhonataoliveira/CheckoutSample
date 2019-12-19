@@ -1,0 +1,30 @@
+<%- include("../header")%>
+<div class="row">
+	<div class="col-md-8 offset-md-2 ">
+		<table class="table table-hover table-responsive" width="100%">
+			<thead>
+				<tr>
+					<th>Ações</th>
+					<th>Usuário</th>
+					<th>Data de Criação</th>
+					<th>Token</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (result && result.length>0) { -%>
+					<% for (var i = 0; i < result.length; i++) { -%>
+						<tr>
+							<td>
+								<a href="/user/<%= result[i]._id %>"><i class="fas fa-edit fa-1x"></i></a>
+							</td>
+							<td><%= result[i].username %></td>
+							<td><%= result[i].creationDate.toLocaleDateString() %></td>
+							<td><%= result[i].token %></td>
+						</tr>
+					<% } -%>	
+				<% } -%>
+			</tbody>
+		</table>
+	</div>
+</div>
+<%- include("../footer")%>

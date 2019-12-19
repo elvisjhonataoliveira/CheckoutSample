@@ -1,0 +1,147 @@
+<%- include("../header")%>
+<!-- JS do Mercado Pago -->
+<script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+<!-- JS da página -->
+<script src="/js/checkout.js"></script>
+<!-- CSS da página -->
+<link rel="stylesheet" type="text/css" href="/css/checkout.css">
+
+<div class="row">
+	<div class="col-md-8 offset-md-2">
+		<form class="form-horizontal jumbotron" id="pay">
+			<fieldset>
+				<legend>Lista de cartões salvos</legend>
+				<% if(errors && errors.length>0){ %>
+					<div class="alert alert-dismissible alert-primary">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<strong>Pagamento recusado, verifique as informações abaixo.</strong> 
+						<ul>
+
+						<% for(let i = 0; i < errors.length; i++) { %>
+							<li class="text-primary"><%=errors[i].msg%></li>
+						<% } %>
+						</ul>
+					</div>
+				<% } %>
+				<input type="hidden" name="email" id="email"/>
+				<input type="hidden" name="token" id="token"/>
+				<input type="hidden" name="savedCard" value="true"/>
+				<input type="hidden" name="paymentMethod" value="credit-card"/>
+				<input type="hidden" name="paymentMethodId" id="paymentMethodId" />
+				<div class="form-group">
+					<label>Valor</label>
+					<input type="text" class="form-control" name="amount" id="amount" placeholder="Digite o valor do pagamento" />
+				</div>
+				<div class="form-group">
+					<label>Clientes disponíveis</label>
+					<select class="form-control" name="customerId" id="customerId">
+						<option>Selecione um cliente</option>
+						<% for (let i = 0; i < cards.length; i++) { -%>
+							<option value="<%=cards[i].id%>"><%=cards[i].email%></option>
+						<% } -%>
+					</select>
+				</div>
+				<div class="form-group card-info">
+					<label>Cartões disponíveis</label>
+					<select class="form-control" name="cardId" id="cardId" data-checkout='cardId'>
+					</select>
+				</div>
+				<div class="form-group row card-info">
+					<div class="col-md-6">
+						<label>CVV</label>
+						<input type="text" class="form-control" data-checkout="securityCode" placeholder="XXXX">
+					</div>
+					<div class="col-md-6">
+						<label class="control-label">Parcelamento</label>
+						<select id="installments" class="form-control" name="installments"></select>
+					</div>
+				</div>
+				<div class="form-group">
+					<input class="btn btn-primary" type="submit" value="Realizar pagamento"/>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<div id="modal-container">
+	<div id="modal-hidder">
+	</div>
+	<div class="alert alert-dismissible alert-primary" id="modal-error">
+		<button type="button" class="close" onclick="javascript: $('#modal-container').hide()">&times;</button>
+		<strong>Erro ao processar pagamento</strong>
+		<ul id="error-list">
+
+		</ul>
+	</div>
+</div>
+<div id="modal-container">
+	<div id="modal-hidder">
+	</div>
+	<div class="alert alert-dismissible alert-primary" id="modal-error">
+		<button type="button" class="close" onclick="javascript: $('#modal-container').hide()">&times;</button>
+		<strong>Erro ao processar pagamento</strong>
+		<ul id="error-list">
+
+		</ul>
+	</div>
+</div>
+
+<%- include("../footer")%>
+<script>
+	window.Mercadopago.setPublishableKey("<%= mpPublickKey %>");
+
+	addEvent(document.querySelector('#customerId'), 'change', getCards);
+	addEvent(document.querySelector('#cardId'), 'change', (e)=>{
+		showLoader();
+		const bin = $("#cardId option:selected").attr("data-card-bin");
+		const paymentMethodType = $("#cardId option:selected").attr("data-method-id");
+		$("#paymentMethodId").val(paymentMethodType);
+		 Mercadopago.getInstallments({
+            "bin": bin,
+            "amount": parseFloat(document.querySelector('#amount').value.replace(/\./g,'')),
+        }, setInstallmentInfo);
+	});
+
+	function getCards(){
+		showLoader();
+		let customerId = $('#customerId').val();
+		let customerEmail = $('#customerId option:selected').text();
+		$('#email').val(customerEmail);
+		$.ajax({
+        	url : "/rest/customer/"+customerId+"/cards",
+        	type: "GET"
+    	}).always(function(data){
+    		if(data.success){
+    			//deu certo, exibir lista de cartões
+    			$("#cardId").empty();
+    			$("#cardId").show();
+    			$("#cardId").append("<option>Selecione um cartão</option>");
+    			data.cards.forEach((item, index)=>{
+    				$("#cardId").append("<option value='"+item.id+"' data-method-id='"+item.payment_method.id+"' data-card-bin='"+item.first_six_digits+"'>"+item.first_six_digits+"xxxxxxxx"+item.last_four_digits+"</option>");
+    			});
+    		} else if(data.responseJSON.msg) {
+    			alert(data.responseJSON.msg);
+    		} else if(data.responseJSON.mpErrors){
+    			alert(data.responseJSON.mpErrors);
+    		}
+    		hideLoader();
+    	});
+	}
+
+
+	doSubmit = false;
+	addEvent(document.querySelector('#pay'),'submit', doPaySaved);
+	function doPaySaved(event){
+	    event.preventDefault();
+	    if(!doSubmit){
+	    	showLoader();
+	        var $form = document.querySelector('#pay');
+	        Mercadopago.createToken($form, sdkResponseHandler);
+	        return false;
+	    }
+	};
+
+	$("#securityCode").mask("0000");
+	$('#amount').mask("###0", {reverse: true});
+
+</script>
