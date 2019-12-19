@@ -1,5 +1,5 @@
 //modulo para leitura do arquivo de propriedades
-const PropertiesReader = require('properties-reader');
+const PropertiesReader = require('properties-reader'); 
 const properties = PropertiesReader('./config/properties.conf');
 
 module.exports.login = (application, request, response)=>{
@@ -46,16 +46,18 @@ module.exports.save = (application, request, response)=>{
 		response.render('user/user', {user:user, errors:errors});
 		return;
 	}
-	if(user._id==undefined || user._id==''){
-		//gerar token para novo usuário
-		const d = new Date().getTime();
-		const uuid = '-xxxx-xxxx-4xxx'.replace(/[x]/g, (c)=>{return Math.floor(Math.random()*10);});
-		user.token = d+uuid;
-	}
 	const userModel = new application.app.models.UserDAO(application);
-
-	userModel.save(user, (error, result)=>{
-		response.redirect('/user/'+user._id);	
+	userModel.get({username: user.username}, 0, 0, {}, (error, result)=>{ 
+		if(result && result.length>0){
+			user._id = result[0]._id;
+		} else {
+			const d = new Date().getTime();
+			const uuid = '-xxxx-xxxx-4xxx'.replace(/[x]/g, (c)=>{return Math.floor(Math.random()*10);});
+			user.token = d+uuid;
+		}
+		userModel.save(user, (error, result)=>{
+			response.redirect('/user/'+user._id);	
+		});
 	});
 }
 

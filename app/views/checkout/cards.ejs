@@ -129,7 +129,7 @@
     			$("#cardId").show();
     			$("#cardId").append("<option>Selecione um cartão</option>");
     			data.cards.forEach((item, index)=>{
-    				$("#cardId").append("<option value='"+item.id+"' data-method-id='"+item.payment_method.id+"' data-card-bin='"+item.first_six_digits+"'>"+item.issuer.name+item.first_six_digits+"xxxxxxxx"+item.last_four_digits+"</option>");
+    				$("#cardId").append("<option value='"+item.id+"' data-method-id='"+item.payment_method.id+"' data-card-bin='"+item.first_six_digits+"'>"+item.issuer.name+" final "+item.last_four_digits+"</option>");
     			});
     		} else if(data.responseJSON.msg) {
     			alert(data.responseJSON.msg);

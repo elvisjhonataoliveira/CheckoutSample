@@ -9,13 +9,10 @@ mercadopago.configurations.setAccessToken(properties.get('mercadopago.privatekey
 //Exibe a página inicial
 module.exports.checkout = (application, request, response)=>{
 	mercadopago.get("/v1/payment_methods").then((data)=>{
-
 		response.render('checkout/checkout', {errors: {}, order:{}, mpPublickKey: properties.get('mercadopago.publickey'), paymentMethods: data.response});
 	});
 	
 }
-
-
 
 //exibe a tela de sucesso para o pagamento
 module.exports.success = (application, request, response)=>{

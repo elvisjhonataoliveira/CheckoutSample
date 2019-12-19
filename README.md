@@ -39,7 +39,9 @@ Após o login, a primeira tela da aplicação já é a de pagamento. As outras o
 
 ## Execução dos teste
 
-Para executar os testes basta ir na pasta raiz do projeto e executar o comando ```npm test```. Os testes configurados serão executados.
+Para executar os testes basta ir na pasta raiz do projeto e executar o comando ```npm test```. Os testes configurados serão executados. 
+
+Antes de executar os testes é recomendável iniciar a aplicação e realizar o cadastro de clientes/cartões/pedidos para que os testes possam ser concluídos com sucesso.
 
 ## Meta
 

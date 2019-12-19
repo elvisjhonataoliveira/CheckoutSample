@@ -12,7 +12,6 @@ const dbName = "checkoutsample";
 
 const initDb = (callback)=>{
     if (_db) {
-        console.warn("Banco já inicilizado, não será feito novamente!");
         return callback(null, _db);
     }
 	client.connect(url, {}, connected);
@@ -20,7 +19,6 @@ const initDb = (callback)=>{
         if (err) {
             return callback(err);
         }
-        console.log("Banco de dados inicializado utilizando a URL: "+url);
         _db = db;
         return callback(null, _db);
     }
@@ -33,7 +31,12 @@ const getDb = ()=>{
     return _db.db(dbName);
 }
 
+const close = ()=>{
+    _db.close();
+}
+
 module.exports = {
     getDb,
-    initDb
+    initDb,
+    close
 };

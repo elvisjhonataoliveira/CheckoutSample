@@ -1,7 +1,7 @@
 const ObjectId = require('mongodb').ObjectID;
 let db;
 const collectionName = 'user';
-
+ 
 function UserDAO(app){
 	db = app.config.dbconnection.getDb();
 }

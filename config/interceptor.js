@@ -18,7 +18,7 @@ const interceptor = (request, response, next)=>{
 				request.session.user = result[0];
 				next();
 			} else {
-				response.sendStatus(403);	
+				response.sendStatus(401);	
 			}
 		});
 		return;
