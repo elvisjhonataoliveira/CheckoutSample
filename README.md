@@ -1,4 +1,4 @@
-# CheckoutSample
+# CCheckoutSample
  
 > Aplicação web desenvolvida em Node JS para utilizar as API's do MercadoPago
 
